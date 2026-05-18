@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星韵 - 注册</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+
+        /* 核心配色（与首页/登录页一致） */
+        :root {
+            --color-blue-deep: #7F9BC3;    /* 深海蓝（主色） */
+            --color-purple: #B8B0D5;       /* 柔紫调 */
+            --color-pink-soft: #F5CEE9;    /* 柔粉调 */
+            --color-blue-light: #DDE4FA;   /* 浅蓝调 */
+            --color-bg-main: #EEECFA;      /* 页面基底（浅紫白） */
+            --color-text: #5A6789;         /* 文字主色 */
+            --color-white: #ffffff;        /* 纯白 */
+            --color-shadow: rgba(127, 155, 195, 0.2); /* 阴影色 */
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--color-bg-main) 0%, var(--color-blue-light) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* 注册容器（毛玻璃+圆角） */
+        .register-container {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px 30px;
+            box-shadow: 0 8px 30px var(--color-shadow);
+            border: 1px solid rgba(221, 228, 250, 0.5);
+        }
+
+        /* 标题区域 */
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .register-header .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--color-blue-deep);
+            margin-bottom: 8px;
+        }
+        .register-header .subtitle {
+            color: var(--color-text);
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* 表单样式 */
+        .register-form .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .register-form label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--color-text);
+            font-size: 14px;
+        }
+        .register-form input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--color-blue-light);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--color-text);
+            outline: none;
+            transition: all 0.3s;
+        }
+        .register-form input:focus {
+            border-color: var(--color-purple);
+            box-shadow: 0 0 8px rgba(184, 176, 213, 0.2);
+        }
+
+        /* 验证码/短信验证码行 */
+        .code-row {
+            display: flex;
+            gap: 10px;
+        }
+        .code-row input {
+            flex: 1;
+        }
+        .send-code {
+            width: 120px;
+            height: 44px;
+            background: var(--color-blue-light);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--color-blue-deep);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .send-code:hover {
+            background: var(--color-purple);
+            color: var(--color-white);
+        }
+
+        /* 协议勾选 */
+        .agreement {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 25px;
+            font-size: 12px;
+            color: var(--color-text);
+            line-height: 1.4;
+        }
+        .agreement input {
+            width: 16px;
+            height: 16px;
+            margin-top: 2px;
+            accent-color: var(--color-blue-deep);
+        }
+        .agreement a {
+            color: var(--color-blue-deep);
+            text-decoration: none;
+        }
+        .agreement a:hover {
+            color: var(--color-purple);
+        }
+
+        /* 注册按钮 */
+        .btn-register {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, var(--color-purple), var(--color-blue-deep));
+            color: var(--color-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-register:hover {
+            box-shadow: 0 4px 15px rgba(127, 155, 195, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* 登录引导 */
+        .login-guide {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--color-text);
+        }
+        .login-guide a {
+            color: var(--color-blue-deep);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .login-guide a:hover {
+            color: var(--color-purple);
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 30px 20px;
+            }
+            .send-code {
+                width: 100px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <!-- 标题区域 -->
+        <div class="register-header">
+            <div class="logo">星韵</div>
+            <div class="subtitle">创建账号，开启你的音乐世界</div>
+        </div>
+
+        <!-- 注册表单 -->
+        <form class="register-form">
+            <div class="form-group">
+                <label for="phone">手机号</label>
+                <input type="tel" id="phone" placeholder="请输入手机号" required>
+            </div>
+
+            <div class="form-group">
+                <label>短信验证码</label>
+                <div class="code-row">
+                    <input type="text" placeholder="请输入验证码" required>
+                    <div class="send-code">获取验证码</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="pwd">设置密码</label>
+                <input type="password" id="pwd" placeholder="8-16位字母/数字/符号组合" required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-pwd">确认密码</label>
+                <input type="password" id="confirm-pwd" placeholder="再次输入密码" required>
+            </div>
+
+            <div class="agreement">
+                <input type="checkbox" id="agreement" required>
+                <label for="agreement">
+                    我已阅读并同意<a href="#">《用户服务协议》</a>和<a href="#">《隐私政策》</a>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-register">注册</button>
+        </form>
+
+        <!-- 登录引导 -->
+        <div class="login-guide">
+            已有账号？<a href="login.html">立即登录</a>
+        </div>
+    </div>
+</body>
+</html>

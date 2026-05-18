@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>欧美金曲精选</title>
+    <style>
+        /* 主题固定配色 匹配图中蓝紫粉 */
+        :root {
+            --blue: #7F9BC3;
+            --purple: #B8B0D5;
+            --pink: #F5CEE9;
+            --light1: #DDEAFA;
+            --light2: #EEECFA;
+            --text: #485978;
+            --hover-bg: rgba(184, 176, 213, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", sans-serif;
+        }
+
+        body {
+            /* 可替换背景图 改url即可 */
+            background: url("./phototwo.jpg") center/cover no-repeat fixed;
+            min-height: 100vh;
+            padding: 60px 20px;
+        }
+
+        /* 全局磨砂遮罩 */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(4px);
+            z-index: -1;
+        }
+
+        /* 容器居中 */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 歌单头部 */
+        .playlist-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .playlist-title {
+            font-size: 36px;
+            color: var(--blue);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .playlist-desc {
+            color: var(--purple);
+            font-size: 16px;
+        }
+
+        /* 歌单列表 */
+        .music-list {
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(127,155,195,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        /* 单首音乐项 */
+        .music-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 12px;
+            border-bottom: 1px solid var(--light2);
+            cursor: pointer;
+            border-radius: 10px;
+            transition: 0.3s ease;
+        }
+
+        .music-item:last-child {
+            border-bottom: none;
+        }
+
+        .music-item:hover {
+            background: var(--hover-bg);
+        }
+
+        /* 正在播放高亮 */
+        .music-item.active {
+            background: linear-gradient(90deg, rgba(127,155,195,0.1), rgba(245,206,233,0.1));
+        }
+
+        /* 左侧信息 */
+        .music-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .music-num {
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--purple));
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .music-info .name {
+            font-size: 17px;
+            color: var(--text);
+            margin-bottom: 3px;
+        }
+
+        .music-info .singer {
+            font-size: 13px;
+            color: var(--purple);
+        }
+
+        /* 右侧时长+按钮 */
+        .music-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .play-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--blue), var(--pink));
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .play-icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* 底部播放器进度 */
+        .bottom-player {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(12px);
+            padding: 15px 30px;
+            box-shadow: 0 -4px 20px rgba(127,155,195,0.15);
+        }
+
+        .progress-box {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background: var(--light2);
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .progress-line {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--blue), var(--pink));
+            border-radius: 3px;
+        }
+
+        /* 隐藏原生音频 */
+        audio {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="playlist-header">
+            <h2 class="playlist-title">欧美金曲精选</h2>
+            <p class="playlist-desc">精选欧美流行歌曲</p >
+        </div>
+
+        <div class="music-list">
+            <!-- 音乐1 可替换src -->
+            <div class="music-item" data-src="music1.mp3">
+                <div class="music-left">
+                    <span class="music-num">1</span>
+                    <div class="music-info">
+                        <div class="name">Love Story</div>
+                        <div class="singer">Taylor Swift</div>
+                    </div>
+                </div>
+                <div class="music-right">
+                    <span class="duration">00:17</span>
+                    <button class="play-icon">▶</button>
+                </div>
+            </div>
+
+            <!-- 音乐2 -->
+            <div class="music-item" data-src="music2.mp3">
+                <div class="music-left">
+                    <span class="music-num">2</span>
+                    <div class="music-info">
+                        <div class="name">Good Time</div>
+                        <div class="singer">Owl City、Carly Rae Jepsen</div>
+                    </div>
+                </div>
+                <div class="music-right">
+                    <span class="duration">00:16</span>
+                    <button class="play-icon">▶</button>
+                </div>
+            </div>
+
+            <!-- 音乐3 -->
+            <div class="music-item" data-src="music1.mp3">
+                <div class="music-left">
+                    <span class="music-num">3</span>
+                    <div class="music-info">
+                        <div class="name">Love Story</div>
+                        <div class="singer">Taylor Swift</div>
+                    </div>
+                </div>
+                <div class="music-right">
+                    <span class="duration">00:17</span>
+                    <button class="play-icon">▶</button>
+                </div>
+            </div>
+
+            <!-- 音乐4 -->
+            <div class="music-item" data-src="music2.mp3">
+                <div class="music-left">
+                    <span class="music-num">4</span>
+                    <div class="music-info">
+                        <div class="name">Good Time</div>
+                        <div class="singer">Owl City、Carly Rae Jepsen</div>
+                    </div>
+                </div>
+                <div class="music-right">
+                    <span class="duration">00:16</span>
+                    <button class="play-icon">▶</button>
+                </div>
+            </div>
+
+            <!-- 音乐5 -->
+            <div class="music-item" data-src="music1.mp3">
+                <div class="music-left">
+                    <span class="music-num">5</span>
+                    <div class="music-info">
+                        <div class="name">Love Story</div>
+                        <div class="singer">Taylor Swift</div>
+                    </div>
+                </div>
+                <div class="music-right">
+                    <span class="duration">00:17</span>
+                    <button class="play-icon">▶</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部全局播放器 -->
+    <div class="bottom-player">
+        <div class="progress-box">
+            <div class="progress-bar">
+                <div class="progress-line"></div>
+            </div>
+        </div>
+        <audio id="audio">
+    </div>
+
+    <script>
+        const audio = document.getElementById('audio');
+        const items = document.querySelectorAll('.music-item');
+        const progressLine = document.querySelector('.progress-line');
+
+        // 播放切换
+        items.forEach(item => {
+            const btn = item.querySelector('.play-icon');
+            btn.addEventListener('click', () => {
+                // 移除所有激活状态
+                items.forEach(i => i.classList.remove('active'));
+                items.forEach(i => i.querySelector('.play-icon').innerText = '▶');
+
+                // 当前歌曲
+                let src = item.dataset.src;
+                if(audio.src.includes(src) && !audio.paused){
+                    audio.pause();
+                    btn.innerText = '▶';
+                }else{
+                    audio.src = src;
+                    audio.play();
+                    item.classList.add('active');
+                    btn.innerText = '⏸';
+                }
+            });
+        });
+
+        // 进度条更新
+        audio.addEventListener('timeupdate', () => {
+            let percent = (audio.currentTime / audio.duration) * 100;
+            progressLine.style.width = percent + '%';
+        });
+
+        // 播放结束重置
+        audio.addEventListener('ended', () => {
+            items.forEach(i => i.classList.remove('active'));
+            items.forEach(i => i.querySelector('.play-icon').innerText = '▶');
+            progressLine.style.width = '0%';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flex布局演示 - 星韵</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --color-blue-deep: #7F9BC3;
+            --color-purple: #B8B0D5;
+            --color-pink-soft: #F5CEE9;
+            --color-bg-main: #EEECFA;
+            --color-text: #5A6789;
+        }
+        body {
+            background: linear-gradient(135deg, var(--color-bg-main) 0%, #DDE4FA 100%);
+            font-family: "Microsoft Yahei", sans-serif;
+            color: var(--color-text);
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background: rgba(255,255,255,0.8);
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: var(--color-blue-deep);
+            font-size: 28px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .demo-box {
+            background: white;
+            border: 1px solid var(--color-bg-main);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+        .demo-title {
+            color: var(--color-purple);
+            margin-bottom: 15px;
+            border-left: 4px solid var(--color-blue-deep);
+            padding-left: 10px;
+        }
+        /* 公用 Flex 容器样式 */
+        .flex-container {
+            display: flex;
+            border: 2px dashed var(--color-purple);
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.5);
+        }
+        .flex-item {
+            background: var(--color-blue-deep);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        /* 演示1：水平分布 */
+        .demo-justify .flex-container {
+            justify-content: space-between;
+        }
+        .demo-justify .flex-item {
+            flex: 1;           /* 等分宽度 */
+            margin: 0 5px;
+        }
+        .demo-justify .flex-item:first-child { margin-left: 0; }
+        .demo-justify .flex-item:last-child { margin-right: 0; }
+
+        /* 演示2：垂直居中（明显居中） */
+        .demo-align .flex-container {
+            align-items: center;
+            height: 180px;      /* 固定高度，方便观察居中 */
+        }
+        .demo-align .flex-item {
+            margin: 0 auto;     /* 可选，水平也居中 */
+        }
+
+        /* 演示3：自动换行（不溢出） */
+        .demo-wrap .flex-container {
+            flex-wrap: wrap;
+            gap: 12px;          /* 用 gap 代替 margin，避免溢出 */
+        }
+        .demo-wrap .flex-item {
+            flex: 0 0 180px;    /* 固定宽度 180px，不允许伸缩 */
+            margin: 0;          /* gap 已经提供间距 */
+        }
+
+        /* 导航栏演示 */
+        .nav-demo {
+            display: flex;
+            background: var(--color-purple);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .nav-demo a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 0;
+            display: block;
+            text-align: center;
+            flex: 1;
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+        .nav-demo a:last-child { border-right: none; }
+        .nav-demo a:hover { background: var(--color-blue-deep); }
+
+        .tip {
+            background: #f0f0f0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🌟 Flex 布局核心演示</h1>
+        <p>展示 Flexbox 的对齐、分布与响应特性</p>
+    </header>
+    <div class="container">
+        <!-- 演示1 -->
+        <div class="demo-box">
+            <h3 class="demo-title">1. justify-content (水平分布)</h3>
+            <div class="flex-container demo-justify">
+                <div class="flex-item">项目 1</div>
+                <div class="flex-item">项目 2</div>
+                <div class="flex-item">项目 3</div>
+            </div>
+            <small>flex:1 等分宽度 + justify-content: space-between</small>
+        </div>
+
+        <!-- 演示2：垂直居中 -->
+        <div class="demo-box">
+            <h3 class="demo-title">2. align-items (垂直居中)</h3>
+            <div class="flex-container demo-align">
+                <div class="flex-item">垂直居中</div>
+            </div>
+            <small>父容器固定高度180px，子元素通过 align-items: center 垂直居中</small>
+        </div>
+
+        <!-- 演示3：自动换行 -->
+        <div class="demo-box">
+            <h3 class="demo-title">3. flex-wrap (自动换行)</h3>
+            <div class="flex-container demo-wrap">
+                <div class="flex-item">卡片 1</div>
+                <div class="flex-item">卡片 2</div>
+                <div class="flex-item">卡片 3</div>
+                <div class="flex-item">卡片 4</div>
+            </div>
+            <div class="tip">
+                💡 每个卡片固定宽度 180px，容器宽度不足时会自动换行，且不会飞出边框。<br>
+                请尝试缩小浏览器窗口宽度，观察卡片换行效果。
+            </div>
+        </div>
+
+        <!-- 演示4：导航栏 -->
+        <div class="demo-box">
+            <h3 class="demo-title">4. 综合应用：Flex 导航栏</h3>
+            <nav class="nav-demo">
+                <a href="#">首页</a>
+                <a href="#">歌单</a>
+                <a href="#">歌手</a>
+                <a href="#">我的</a>
+            </nav>
+        </div>
+    </div>
+</body>
+</html>

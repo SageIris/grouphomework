@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流行音乐</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+
+        /* 可替换背景图，也可以用渐变背景 */
+        body {
+            /* 背景图：只修改url中的链接即可替换背景 */
+            background: url("./photofour.jpg") no-repeat center center;
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* 全局半透明遮罩，让文字更清晰 */
+        .bg-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(222, 234, 250, 0.6); /* #DDEAFA 半透明遮罩 */
+            z-index: -1;
+        }
+
+        /* 播放器主容器，毛玻璃质感 */
+        .music-container {
+            width: 100%;
+            max-width: 480px;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            padding: 40px 35px;
+            box-shadow: 0 10px 40px rgba(184, 176, 213, 0.3);
+            color: #7F9BC3; /* 文字用主色，保证清晰 */
+        }
+
+        .title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 35px;
+            color: #B8B0D5;
+            letter-spacing: 3px;
+        }
+
+        /* 当前播放信息区 */
+        .now-play {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid rgba(184, 176, 213, 0.3);
+        }
+
+        .cover {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            overflow: hidden;
+            border: 4px solid rgba(245, 206, 233, 0.6);
+            box-shadow: 0 0 20px rgba(184, 176, 213, 0.4);
+        }
+
+        .cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .song-title {
+            font-size: 22px;
+            margin-bottom: 8px;
+            color: #7F9BC3;
+        }
+
+        .song-author {
+            font-size: 16px;
+            color: #B8B0D5;
+            opacity: 0.8;
+        }
+
+        /* 音频控件美化 */
+        audio {
+            width: 100%;
+            margin: 20px 0;
+            outline: none;
+            filter: sepia(10%) saturate(120%) hue-rotate(180deg);
+        }
+
+        /* 音乐列表 */
+        .music-list {
+            list-style: none;
+        }
+
+        .music-list li {
+            padding: 16px 20px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #7F9BC3;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .music-list li:hover {
+            background: rgba(245, 206, 233, 0.4);
+            transform: translateX(6px);
+        }
+
+        /* 正在播放的歌曲高亮，使用粉紫色 */
+        .music-list li.active {
+            background: rgba(245, 206, 233, 0.6);
+            border-left: 5px solid #F5CEE9;
+            color: #B8B0D5;
+            font-weight: 600;
+        }
+
+        .music-list li::before {
+            content: "🎵";
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景遮罩 -->
+    <div class="bg-mask"></div>
+
+    <div class="music-container">
+        <h2 class="title">流行音乐</h2>
+
+        <!-- 当前播放信息区 -->
+        <div class="now-play">
+            <!-- 初始封面，这里也可以改成你自己的默认封面 -->
+            <div class="cover">
+                <img id="currentCover" src="./photofive.jpg" alt="音乐封面">
+            </div>
+            <div class="song-title" id="nowSong">节奏明快</div>
+            <div class="song-author" id="nowAuthor">旋律动听、朗朗上口</div>
+            <!-- 音频播放器 -->
+            <audio id="audioPlayer" controls loop preload="auto">
+                <source id="audioSrc" src="./popmusic1.mp3" type="audio/mpeg">
+                您的浏览器不支持音频播放
+            
+        </div>
+
+        <!-- 多首音乐列表（已添加 data-cover 属性） -->
+        <ul class="music-list" id="musicList">
+            <li 
+                data-src="./popmusic1.mp3" 
+                data-name="节奏明快" 
+                data-author="旋律动听、朗朗上口" 
+                data-cover="./photofive.jpg"
+                class="active"
+            >
+                稻香-周杰伦
+            </li>
+            <li 
+                data-src="./popmusic2.mp3" 
+                data-name="节奏明快" 
+                data-author="旋律动听、朗朗上口" 
+                data-cover="./photofive.jpg"
+            >
+                晴天-周杰伦
+            </li>
+            <li 
+                data-src="./popmusic3.mp3"
+                data-name="节奏明快" 
+                data-author="旋律动听、朗朗上口" 
+                data-cover="./photofive.jpg"
+            >
+                七里香-周杰伦
+            </li>
+            <li 
+                data-src="./popmusic1.mp3" 
+                data-name="节奏明快" 
+                data-author="旋律动听、朗朗上口" 
+                data-cover="./photofive.jpg"
+            >
+                稻香-周杰伦
+            </li>
+            <li 
+                data-src="./popmusic2.mp3" 
+                data-name="节奏明快" 
+                data-author="旋律动听、朗朗上口" 
+                data-cover="./photofive.jpg"
+            >
+                晴天-周杰伦
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        // 获取元素
+        const audio = document.getElementById('audioPlayer');
+        const audioSrc = document.getElementById('audioSrc');
+        const nowSong = document.getElementById('nowSong');
+        const nowAuthor = document.getElementById('nowAuthor');
+        const currentCover = document.getElementById('currentCover');
+        const listItems = document.querySelectorAll('.music-list li');
+
+        // 为每首歌绑定点击事件
+        listItems.forEach(item => {
+            item.addEventListener('click', function () {
+                // 移除所有高亮
+                listItems.forEach(li => li.classList.remove('active'));
+                // 当前歌曲高亮
+                this.classList.add('active');
+
+                // 获取歌曲信息（新增了封面读取）
+                const src = this.getAttribute('data-src');
+                const name = this.getAttribute('data-name');
+                const author = this.getAttribute('data-author');
+                const coverUrl = this.getAttribute('data-cover');
+
+                // 更新播放器（同步更新封面）
+                audioSrc.src = src;
+                nowSong.innerText = name;
+                nowAuthor.innerText = author;
+                currentCover.src = coverUrl;
+
+                // 加载并播放
+                audio.load();
+                audio.play().catch(e => console.log("自动播放被浏览器阻止，需用户手动点击播放"));
+            });
+        });
+    </script>
+</body>
+</html>

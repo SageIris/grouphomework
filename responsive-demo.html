@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>响应式布局演示 - 星韵</title>
+    <style>
+        :root {
+            --color-blue-deep: #7F9BC3;
+            --color-purple: #B8B0D5;
+            --color-pink-soft: #F5CEE9;
+            --color-bg-main: #EEECFA;
+            --color-text: #5A6789;
+        }
+        body {
+            background: linear-gradient(135deg, var(--color-bg-main) 0%, #DDE4FA 100%);
+            font-family: "Microsoft Yahei", sans-serif;
+            color: var(--color-text);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background: rgba(255,255,255,0.8);
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: var(--color-blue-deep);
+            font-size: 28px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 响应式演示核心 */
+        .device-info {
+            text-align: center;
+            background: var(--color-purple);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .grid-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; /* 默认允许换行 */
+        }
+        .grid-item {
+            background: white;
+            border: 2px solid var(--color-blue-deep);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            flex: 1 1 calc(33.33% - 20px); /* 默认：每行3个 */
+            min-width: 200px;
+            transition: all 0.3s;
+        }
+        .grid-item h3 {
+            color: var(--color-blue-deep);
+            margin-bottom: 10px;
+        }
+
+        /* 字体响应式演示 */
+        .responsive-text {
+            font-size: 4vw; /* 视口宽度的 4% */
+            text-align: center;
+            color: var(--color-purple);
+            margin: 30px 0;
+            background: rgba(255,255,255,0.5);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        /* ================= 响应式断点 ================= */
+        /* 平板模式 (768px - 992px) */
+        @media (max-width: 992px) {
+            .grid-item {
+                flex: 1 1 calc(50% - 15px); /* 每行2个 */
+            }
+            .device-info::after {
+                content: " [检测到平板视口]";
+                color: yellow;
+            }
+        }
+
+        /* 手机模式 (<= 768px) */
+        @media (max-width: 768px) {
+            .grid-item {
+                flex: 1 1 100%; /* 每行1个，占满全宽 */
+            }
+            .device-info::after {
+                content: " [检测到手机视口]";
+                color: #F5CEE9;
+            }
+            /* 手机端隐藏次要元素 */
+            .hidden-mobile {
+                display: none;
+            }
+        }
+
+        /* 极小屏幕 (<= 480px) */
+        @media (max-width: 480px) {
+            .responsive-text {
+                font-size: 8vw; /* 屏幕越小，相对字体越大（可读性优化） */
+                background: var(--color-blue-deep);
+                color: white;
+            }
+            .grid-item {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>📱 响应式布局核心演示</h1>
+        <p>调整浏览器窗口大小，观察布局的实时变化</p>
+    </header>
+
+    <div class="container">
+        <!-- 设备状态指示 -->
+        <div class="device-info" id="deviceStatus">当前视口：自适应模式</div>
+
+        <!-- 响应式栅格演示 -->
+        <div class="demo-box">
+            <h3 style="color: var(--color-purple); margin-bottom: 15px;">1. 响应式栅格系统</h3>
+            <p style="text-align: center; margin-bottom: 20px;">请尝试缩放浏览器窗口：</p>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <h3>布局自适应</h3>
+                    <p>PC端显示3列，平板端2列，手机端1列堆叠。</p>
+                </div>
+                <div class="grid-item">
+                    <h3>流式布局</h3>
+                    <p>使用百分比或 calc() 计算宽度，随容器伸缩。</p>
+                </div>
+                <div class="grid-item hidden-mobile">
+                    <h3>移动端隐藏</h3>
+                    <p class="hidden-mobile">此卡片在手机端会被隐藏 (display: none)。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 字体响应式演示 -->
+        <div class="demo-box">
+            <h3 style="color: var(--color-purple); margin-bottom: 15px;">2. 流体排版 (Fluid Typography)</h3>
+            <div class="responsive-text">
+                缩放屏幕看我的变化
+            </div>
+            <p style="text-align: center; color: #5A6789;">
+                使用 vw (视口宽度单位) 实现字体随屏幕大小自动调整。
+            </p>
+        </div>
+
+        <!-- 媒体查询代码示意 -->
+        <div class="demo-box">
+            <h3 style="color: var(--color-purple); margin-bottom: 15px;">3. 核心代码逻辑</h3>
+            <pre style="background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow: auto; font-size: 14px;">
+@media (max-width: 768px) {
+    /* 手机端样式 */
+    .grid-item {
+        flex: 1 1 100%; /* 强制单列 */
+    }
+    .hidden-mobile { 
+        display: none; /* 隐藏复杂元素 */
+    }
+}
+            </pre>
+        </div>
+    </div>
+
+    <script>
+        // 简单的视口检测脚本（仅用于演示，非必须）
+        function updateViewportInfo() {
+            const width = window.innerWidth;
+            const status = document.getElementById('deviceStatus');
+            if (width > 992) {
+                status.textContent = "当前视口：桌面端 (Desktop)";
+            } else if (width > 768) {
+                status.textContent = "当前视口：平板端 (Tablet)";
+            } else {
+                status.textContent = "当前视口：手机端 (Mobile)";
+            }
+        }
+        window.addEventListener('resize', updateViewportInfo);
+        updateViewportInfo(); // 初始化
+    </script>
+</body>
+</html>

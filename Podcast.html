@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="skip">星韵 · 听书播客</title>
+  <style>
+    /* --- 全局重置与配色 --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :root {
+      /* 沿用你的蓝紫粉高级感 */
+      --primary: #7F9BC3; /* 深海蓝 */
+      --secondary: #B8B0D5; /* 柔紫 */
+      --accent: #F5CEE9; /* 柔粉 */
+      --white-alpha: rgba(255, 255, 255, 0.95);
+      --shadow: 0 2px 10px rgba(184, 176, 213, 0.1);
+    }
+    body {
+      font-family: "Helvetica Neue", sans-serif;
+      background: #f4f4f5;
+      color: #333;
+      min-height: 100vh;
+      padding-top: 60px; /* 为吸顶播放器留出空间 */
+    }
+
+    /* --- 1. 顶部播放条 (网易云风格) --- */
+    .player-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+  background: transparent; 
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 1000;
+      overflow: hidden; /* 防止背景溢出 */
+    }
+/* 新增：横幅背景图与透明遮罩 */
+    .player-bar::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      /* TODO: 在这里替换你的横幅背景图片路径 */
+      background-image: url('top.png'); 
+      background-size: cover;
+      background-position: center;
+      /* 背景图的透明度，0.4代表40%的不透明度，你可以按需微调 */
+      opacity: 0.4; 
+      z-index: -1; /* 放在最底层 */
+    }
+
+    /* 优化内部元素层级，确保文字和按钮在背景之上 */
+    .player-info, audio {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* --- 2. 主内容区 (轮播图容器) --- */
+    .main-content {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+    h1 {
+      color: var(--primary);
+      margin-bottom: 30px;
+      font-size: 28px;
+    }
+    /* 新增：文案卡片区域布局 */
+    .text-cards {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap; /* 屏幕变小时自动换行 */
+            /* TODO: 在这里替换你的横幅背景图片路径 */
+      background-image: url('sky.png'); 
+      background-size: cover;
+      background-position: center;
+
+      z-index: -1; /* 放在最底层 */
+    }
+
+    /* 新增：单个悬浮卡片样式 */
+    .text-card {
+      background: rgba(255, 255, 255, 0.3); 
+      backdrop-filter: blur(10px); /* 毛玻璃效果 */
+      padding: 25px;
+      border-radius: 12px;
+      width: 300px; /* 卡片宽度 */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(255, 255, 255);
+      transition: all 0.3s ease; /* 增加平滑过渡动画 */
+      cursor: default;
+    }
+
+    .text-card h3 {
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .text-card p {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* 新增：悬浮效果 (放大 + 阴影加深) */
+    .text-card:hover {
+      transform: translateY(-8px); /* 向上浮动8像素 */
+      box-shadow: 0 12px 25px rgba(127, 155, 195, 0.2); /* 阴影变大变柔和 */
+    }
+
+    /* 轮播图容器 */
+    .carousel {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      height: 400px; /* 视频封面高度 */
+      margin: 0 auto;
+      margin-top: 40px; 
+      overflow: hidden;
+      border-radius: 15px;
+      background: #000;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* 轮播内部轨道 */
+    .carousel-track {
+      display: flex;
+      width: 300%; /* 3张图，所以是300% */
+      height: 100%;
+      transition: transform 0.2s ease;
+    }
+
+    /* 单个轮播项 */
+    .carousel-slide {
+      width: 33.333%; /* 3列均分 */
+      height: 100%;
+      position: relative;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    /* 封面图片样式 */
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* 播放按钮覆盖层 (点击触发视频) */
+    .play-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .carousel-slide:hover .play-overlay {
+      opacity: 1;
+    }
+    .play-btn-big {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.3);
+      border: 3px solid white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    /* --- 3. 视频模态框 (点击图片后显示) --- */
+    .video-modal {
+      display: none; /* 默认隐藏 */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .video-box {
+      max-width: 90vw;
+      max-height: 90vh;
+    }
+    .video-box video {
+      max-width: 100%;
+      max-height: 90vh;
+    }
+    .close-btn {
+      color: white;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    /* --- 4. 页脚 --- */
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      background: white;
+      color: var(--primary);
+      font-size: 14px;
+      border-top: 1px solid #eee;
+      margin-top: 60px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. 顶部播放条 -->
+  <div class="player-bar">
+    <div class="player-info">
+      <span>🎧 星韵播客</span>
+    </div>
+    <!-- TODO: 在此处插入你的音频文件 -->
+    <!-- 将 "your_audio.mp3" 替换为你实际的音频文件名 -->
+    <audio id="bgAudio" controls>
+      <source src="Simon.mp3" type="audio/mpeg">
+      
+    </audio>
+  </div>
+
+  <!-- 2. 主内容区 -->
+  <main class="main-content">
+    <h1>好书推荐</h1>
+
+  <div class="text-cards">
+      <!-- 文案卡片 1 -->
+      <div class="text-card" id="one">
+        <h3>✨蛤蟆先生去看心理医生</h3>
+        <p>阅读记：《蛤蟆先生去看心理医生》
+正视自己的情绪 开心 愤怒 悲伤 痛苦 嫉妒 等等一并接纳 包容自己而不是在面对别人“欺负”自己的时候 自己也连同别人一起欺负自己 成为和别人一样的施暴者 没有一种批判比自我批判更强烈 也没有一个法官比我们自己更严苛
+生活里没有完美的人 每个人都有或多或少的缺陷 但是依旧可以选择处于我好你也好的坐标里去看待身边的人 不必否定他人 求同存异 允许自己做自己允许别人做别人 在相处中让自己舒服也让别人舒服 理解自己内心的情感世界 然后 掌控它。</p>
+      </div>
+    
+
+      <!-- 文案卡片 2 -->
+      <div class="text-card"id="two">
+        <h3>✨被讨厌的勇气</h3>
+        <p>阿德勒认为，一切烦恼都来自人际关系。他鼓励我们专注自己的事，不干涉别人的事，同时也不被别人插手自己的事。拥有清晰的心理边界，才能保持清爽的人际关系;
+            人生的意义是自己赋予自己的。我们要有被人讨厌的勇气，活在当下，接纳自己，专注于眼前的事情。只有这样，我们才能真正地活出自己，找到属于自己的幸福。
+        </p>
+        </div>
+   
+
+  
+      <!-- 文案卡片 3-->
+      <div class="text-card"id="three">
+        <h3>✨奥吉和我</h3>
+        <p>
+即使在别人的人生中是配角，在自己的人生故事中一定是主角，每个人的生命故事都是奇迹！
+        </p>
+        </div>
+    </div>
+
+ <h1>下滑后可点击播放</h1>
+    <!-- 轮播图容器 -->
+    <div class="carousel">
+      <!-- 轮播轨道 -->
+      <div class="carousel-track" id="carouselTrack">
+        
+        <!-- 轮播项 1 -->
+        <div class="carousel-slide" data-video="one.mp4">
+          <!-- TODO: 替换为你的第一张封面图路径 -->
+          <img src="one.jpg" alt="one">
+          <div class="play-overlay">
+            <div class="play-btn-big">▶</div>
+          </div>
+        </div>
+
+        <!-- 轮播项 2 -->
+        <div class="carousel-slide" data-video="two.mp4">
+          <!-- TODO: 替换为你的第二张封面图路径 -->
+          <img src="two.jpg" alt="two">
+          <div class="play-overlay">
+            <div class="play-btn-big">▶</div>
+          </div>
+        </div>
+
+        <!-- 轮播项 3 -->
+        <div class="carousel-slide" data-video="three.mp4">
+          <!-- TODO: 替换为你的第三张封面图路径 -->
+          <img src="three.jpg" alt="three">
+          <div class="play-overlay">
+            <div class="play-btn-big">▶</div>
+          </div>
+        </div>
+</div>
+  </main>
+
+  <!-- 3. 视频播放模态框 -->
+  <div class="video-modal" id="videoModal">
+    <div class="video-box">
+      <!-- 视频将在这里动态加载 -->
+      <video id="modalVideo" controls autoplay></video>
+    </div>
+    <div class="close-btn" onclick="closeVideo()">点击任意处或按 Esc 键关闭</div>
+  </div>
+
+  <!-- 4. 页脚 -->
+  <footer>
+    <p>© 2026 星韵 · 播客</p>
+    <p>五线谱 开刃作</p>
+  </footer>
+
+  <!-- 交互逻辑脚本 -->
+  <script>
+    // 获取 DOM 元素
+    const carouselTrack = document.getElementById('carouselTrack');
+    const videoModal = document.getElementById('videoModal');
+    const modalVideo = document.getElementById('modalVideo');
+    let currentIndex = 0;
+
+    // 自动轮播逻辑
+    setInterval(() => {
+      currentIndex = (currentIndex + 1) % 3; // 3张图循环
+      carouselTrack.style.transform = `translateX(-${currentIndex * 33.333}%)`;
+    }, 4000); // 每4秒切换一张
+
+    // 点击轮播图播放视频
+    document.querySelectorAll('.carousel-slide').forEach(slide => {
+      slide.addEventListener('click', function() {
+        const videoSrc = this.getAttribute('data-video');
+        modalVideo.src = videoSrc; // 动态设置视频源
+        videoModal.style.display = 'flex'; // 显示视频框
+        modalVideo.play(); // 开始播放
+      });
+    });
+
+    // 关闭视频逻辑
+    function closeVideo() {
+      videoModal.style.display = 'none';
+      modalVideo.pause();
+      modalVideo.src = ""; // 清空视频源，停止加载
+    }
+    videoModal.addEventListener('click', closeVideo);
+  </script>
+</body>
+</html>

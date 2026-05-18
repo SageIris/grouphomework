@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>更多音乐分类</title>
+    <style>
+        /* 统一主题配色 匹配原图蓝紫粉 */
+        :root {
+            --blue: #7F9BC3;
+            --purple: #B8B0D5;
+            --pink: #F5CEE9;
+            --light-blue: #DDEAFA;
+            --light-purple: #EEECFA;
+            --text: #4a5b7a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", sans-serif;
+        }
+
+        body {
+            /* 可替换背景图：修改url地址即可 */
+            background: url("./one.jpg") center/cover no-repeat fixed;
+            min-height: 100vh;
+            padding: 50px 20px;
+        }
+
+        /* 全局半透明遮罩 不遮挡背景又提升整洁度 */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.55);
+            z-index: -1;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 38px;
+            color: var(--blue);
+            margin-bottom: 45px;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px rgba(127,155,195,0.2);
+        }
+
+        /* 6个播放器网格布局 自动适配 */
+        .player-box {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 28px;
+        }
+
+        /* 单个播放器卡片样式 */
+        .music-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(10px);
+            border-radius: 22px;
+            padding: 25px;
+            box-shadow: 0 8px 26px rgba(184, 176, 213, 0.25);
+            border: 1px solid rgba(255,255,255,0.4);
+            transition: all 0.3s ease;
+        }
+
+        .music-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(127,155,195,0.3);
+        }
+
+        /* 播放器封面渐变配色 */
+        .card-cover {
+            width: 100%;
+            height: 170px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--blue), var(--purple), var(--pink));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .song-name {
+            font-size: 20px;
+            color: var(--text);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .song-author {
+            font-size: 14px;
+            color: var(--purple);
+            margin-bottom: 18px;
+        }
+
+        /* 进度条 */
+        .progress-wrap {
+            width: 100%;
+            height: 6px;
+            background: var(--light-purple);
+            border-radius: 3px;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .progress-line {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--blue), var(--pink));
+            border-radius: 3px;
+        }
+
+        /* 时间显示 */
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+
+        /* 控制按钮 */
+        .control-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .ctrl-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--blue), var(--purple));
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .ctrl-btn.play-main {
+            width: 54px;
+            height: 54px;
+            font-size: 22px;
+        }
+
+        .ctrl-btn:hover {
+            transform: scale(1.08);
+        }
+
+        /* 隐藏原生音频控件 */
+        audio {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="page-title">更多音乐分类</h1>
+
+    <div class="player-box">
+        <!-- 播放器1 -->
+        <div class="music-card">
+            <div class="card-cover">🎵</div>
+            <div class="song-name">晴天-周杰伦</div>
+            <div class="song-author">流行音乐</div>
+            <div class="progress-wrap">
+                <div class="progress-line"></div>
+            </div>
+            <div class="time-info">
+                <span class="curr-time">00:00</span>
+                <span class="total-time">00:58</span>
+            </div>
+            <div class="control-group">
+                <button class="ctrl-btn">⏮</button>
+                <button class="ctrl-btn play-main">▶</button>
+                <button class="ctrl-btn">⏭</button>
+            </div>
+            <audio class="audio-src" src="popmusic2.mp3">
+        </div>
+
+        <!-- 播放器2 -->
+        <div class="music-card">
+            <div class="card-cover">🎶</div>
+            <div class="song-name">a小调圆舞曲 肖邦 -唐云歌</div>
+            <div class="song-author">古典音乐</div>
+            <div class="progress-wrap">
+                <div class="progress-line"></div>
+            </div>
+            <div class="time-info">
+                <span class="curr-time">00:00</span>
+                <span class="total-time">00:47</span>
+            </div>
+            <div class="control-group">
+                <button class="ctrl-btn">⏮</button>
+                <button class="ctrl-btn play-main">▶</button>
+                <button class="ctrl-btn">⏭</button>
+            </div>
+            <audio class="audio-src" src="classicalmusic1.mp3">
+        </div>
+
+        <!-- 播放器3 -->
+        <div class="music-card">
+            <div class="card-cover">🎼</div>
+            <div class="song-name">特别的人-方大同</div>
+            <div class="song-author">R&B音乐</div>
+            <div class="progress-wrap">
+                <div class="progress-line"></div>
+            </div>
+            <div class="time-info">
+                <span class="curr-time">00:00</span>
+                <span class="total-time">00:37</span>
+            </div>
+            <div class="control-group">
+                <button class="ctrl-btn">⏮</button>
+                <button class="ctrl-btn play-main">▶</button>
+                <button class="ctrl-btn">⏭</button>
+            </div>
+            <audio class="audio-src" src="RandBmusic1.mp3">
+        </div>
+
+        <!-- 播放器4 -->
+        <div class="music-card">
+            <div class="card-cover">🎹</div>
+            <div class="song-name">盛夏-ALisa</div>
+            <div class="song-author">轻音乐</div>
+            <div class="progress-wrap">
+                <div class="progress-line"></div>
+            </div>
+            <div class="time-info">
+                <span class="curr-time">00:00</span>
+                <span class="total-time">00:47</span>
+            </div>
+            <div class="control-group">
+                <button class="ctrl-btn">⏮</button>
+                <button class="ctrl-btn play-main">▶</button>
+                <button class="ctrl-btn">⏭</button>
+            </div>
+            <audio class="audio-src" src="light1.mp3">
+        </div>
+
+        <!-- 播放器5 -->
+        <div class="music-card">
+            <div class="card-cover">🎧</div>
+            <div class="song-name">Love Story-Taylor Swift</div>
+            <div class="song-author">英文歌曲</div>
+            <div class="progress-wrap">
+                <div class="progress-line"></div>
+            </div>
+            <div class="time-info">
+                <span class="curr-time">00:00</span>
+                <span class="total-time">00:17</span>
+            </div>
+            <div class="control-group">
+                <button class="ctrl-btn">⏮</button>
+                <button class="ctrl-btn play-main">▶</button>
+                <button class="ctrl-btn">⏭</button>
+            </div>
+            <audio class="audio-src" src="music1.mp3">
+        </div>
+
+        <!-- 播放器6 -->
+        <div class="music-card">
+            <div class="card-cover">✨</div>
+            <div class="song-name">云水谣-en</div>
+            <div class="song-author">古风歌曲</div>
+            <div class="progress-wrap">
+                <div class="progress-line"></div>
+            </div>
+            <div class="time-info">
+                <span class="curr-time">00:00</span>
+                <span class="total-time">00:24</span>
+            </div>
+            <div class="control-group">
+                <button class="ctrl-btn">⏮</button>
+                <button class="ctrl-btn play-main">▶</button>
+                <button class="ctrl-btn">⏭</button>
+            </div>
+            <audio class="audio-src" src="music7.mp3">
+        </div>
+    </div>
+
+    <script>
+        // 时间格式化
+        function formatTime(t) {
+            let m = Math.floor(t / 60);
+            let s = Math.floor(t % 60);
+            return (m < 10 ? "0"+m : m) + ":" + (s < 10 ? "0"+s : s);
+        }
+
+        // 遍历6个播放器单独绑定事件
+        document.querySelectorAll(".music-card").forEach(card => {
+            let audio = card.querySelector(".audio-src");
+            let playBtn = card.querySelector(".play-main");
+            let progressLine = card.querySelector(".progress-line");
+            let progressWrap = card.querySelector(".progress-wrap");
+            let currTimeDom = card.querySelector(".curr-time");
+            let totalTimeDom = card.querySelector(".total-time");
+
+            // 播放暂停
+            playBtn.addEventListener("click", () => {
+                if(audio.paused) {
+                    audio.play();
+                    playBtn.innerText = "⏸";
+                } else {
+                    audio.pause();
+                    playBtn.innerText = "▶";
+                }
+            });
+
+            // 加载总时长
+            audio.addEventListener("loadedmetadata", () => {
+                totalTimeDom.innerText = formatTime(audio.duration);
+            });
+
+            // 实时更新进度和时间
+            audio.addEventListener("timeupdate", () => {
+                let per = (audio.currentTime / audio.duration) * 100;
+                progressLine.style.width = per + "%";
+                currTimeDom.innerText = formatTime(audio.currentTime);
+            });
+
+            // 点击进度条跳转
+            progressWrap.addEventListener("click", e => {
+                let w = progressWrap.clientWidth;
+                let x = e.offsetX;
+                audio.currentTime = (x / w) * audio.duration;
+            });
+        });
+    </script>
+</body>
+</html>

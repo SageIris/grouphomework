@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猜你喜欢</title>
+    <style>
+        /* 固定主题配色 匹配原图蓝紫粉 */
+        :root {
+            --blue: #7F9BC3;
+            --purple: #B8B0D5;
+            --pink: #F5CEE9;
+            --light1: #DDEAFA;
+            --light2: #EEECFA;
+            --text: #455675;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", sans-serif;
+        }
+
+        body {
+            /* 可替换背景图 修改url即可 */
+            background: url("./photoone.jpg") center/cover no-repeat fixed;
+            min-height: 100vh;
+            padding: 50px 20px;
+        }
+
+        /* 全局磨砂遮罩 */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.55);
+            backdrop-filter: blur(5px);
+            z-index: -1;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        /* 歌单头部 封面+信息 */
+        .playlist-top {
+            display: flex;
+            align-items: center;
+            gap: 35px;
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 28px rgba(127,155,195,0.2);
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        /* 歌单正方形封面 可替换 */
+        .playlist-cover {
+            width: 180px;
+            height: 180px;
+            border-radius: 18px;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 6px 20px rgba(127,155,195,0.25);
+        }
+
+        .playlist-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 歌单文字信息 */
+        .playlist-info h2 {
+            font-size: 32px;
+            color: var(--blue);
+            margin-bottom: 10px;
+        }
+
+        .playlist-info p {
+            color: var(--purple);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* 音乐列表容器 */
+        .music-list {
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 28px rgba(127,155,195,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        /* 单首音乐条目 */
+        .music-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 10px;
+            border-bottom: 1px solid var(--light2);
+            border-radius: 10px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .music-item:last-child {
+            border-bottom: none;
+        }
+
+        .music-item:hover {
+            background: linear-gradient(90deg, rgba(127,155,195,0.08), rgba(245,206,233,0.08));
+        }
+
+        /* 左侧序号+歌曲信息 */
+        .music-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .song-num {
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--purple));
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .song-text .name {
+            font-size: 17px;
+            color: var(--text);
+            margin-bottom: 3px;
+        }
+
+        .song-text .author {
+            font-size: 13px;
+            color: var(--purple);
+        }
+
+        /* 播放按钮 */
+        .play-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--blue), var(--pink));
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* 底部全局播放器进度条 */
+        .bottom-player {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(12px);
+            padding: 12px 30px;
+        }
+
+        .progress-wrap {
+            max-width: 850px;
+            margin: 0 auto;
+            height: 5px;
+            background: var(--light2);
+            border-radius: 3px;
+        }
+
+        .progress-line {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--blue), var(--pink));
+            border-radius: 3px;
+        }
+
+        audio {
+            display: none;
+        }
+
+        /* 适配手机 */
+        @media (max-width: 600px) {
+            .playlist-top {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 歌单头部 封面+简介 -->
+        <div class="playlist-top">
+            <!-- 歌单封面 可替换src -->
+            <div class="playlist-cover">
+                <img src="./photofive.jpg" alt="歌单封面">
+            </div>
+            <div class="playlist-info">
+                <h2>猜你喜欢</h2>
+            </div>
+        </div>
+
+        <!-- 音乐列表 -->
+        <div class="music-list">
+            <div class="music-item" data-src="light1.mp3">
+                <div class="music-left">
+                    <span class="song-num">1</span>
+                    <div class="song-text">
+                        <div class="name">盛夏-ALisa</div>
+                        <div class="author">轻音乐</div>
+                    </div>
+                </div>
+                <button class="play-btn">▶</button>
+            </div>
+
+            <div class="music-item" data-src="music7.mp3">
+                <div class="music-left">
+                    <span class="song-num">2</span>
+                    <div class="song-text">
+                        <div class="name">云水谣-en</div>
+                        <div class="author">古风歌曲</div>
+                    </div>
+                </div>
+                <button class="play-btn">▶</button>
+            </div>
+
+            <div class="music-item" data-src="popmusic2.mp3">
+                <div class="music-left">
+                    <span class="song-num">3</span>
+                    <div class="song-text">
+                        <div class="name">晴天-周杰伦</div>
+                        <div class="author">流行音乐</div>
+                    </div>
+                </div>
+                <button class="play-btn">▶</button>
+            </div>
+
+            <div class="music-item" data-src="RandBmusic1.mp3">
+                <div class="music-left">
+                    <span class="song-num">4</span>
+                    <div class="song-text">
+                        <div class="name">特别的人-方大同</div>
+                        <div class="author">R&B音乐</div>
+                    </div>
+                </div>
+                <button class="play-btn">▶</button>
+            </div>
+
+            <div class="music-item" data-src="light3.mp3">
+                <div class="music-left">
+                    <span class="song-num">5</span>
+                    <div class="song-text">
+                        <div class="name">星茶会-灰澈</div>
+                        <div class="author">轻音乐</div>
+                    </div>
+                </div>
+                <button class="play-btn">▶</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部播放器 -->
+    <div class="bottom-player">
+        <div class="progress-wrap">
+            <div class="progress-line"></div>
+        </div>
+        <audio id="audioPlayer">
+    </div>
+
+    <script>
+        const audio = document.getElementById('audioPlayer');
+        const items = document.querySelectorAll('.music-item');
+        const progressLine = document.querySelector('.progress-line');
+
+        // 歌曲播放切换
+        items.forEach(item => {
+            const btn = item.querySelector('.play-btn');
+            btn.addEventListener('click', () => {
+                // 重置所有按钮
+                items.forEach(i => i.querySelector('.play-btn').innerText = '▶');
+
+                let songSrc = item.dataset.src;
+                if(audio.src.includes(songSrc) && !audio.paused){
+                    audio.pause();
+                    btn.innerText = '▶';
+                }else{
+                    audio.src = songSrc;
+                    audio.play();
+                    btn.innerText = '⏸';
+                }
+            });
+        });
+
+        // 进度条实时更新
+        audio.addEventListener('timeupdate', () => {
+            let percent = (audio.currentTime / audio.duration) * 100;
+            progressLine.style.width = percent + '%';
+        });
+
+        // 播放结束重置
+        audio.addEventListener('ended', () => {
+            items.forEach(i => i.querySelector('.play-btn').innerText = '▶');
+            progressLine.style.width = '0%';
+        });
+    </script>
+</body>
+</html>

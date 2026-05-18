@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>每日播客</title>
+    <style>
+        :root {
+            /* 直接使用图中的配色 */
+            --color-blue: #7F9BC3;
+            --color-purple: #B8B0D5;
+            --color-pink: #F5CEE9;
+            --color-light-blue: #DDEAFA;
+            --color-light-purple: #EEECFA;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", sans-serif;
+        }
+
+        /* 页面背景（可替换） */
+        body {
+            background: url("./photofive.jpg") no-repeat center center;
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 60px 20px;
+            position: relative;
+        }
+
+        /* 背景遮罩，保证文字可读性 */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(238, 236, 250, 0.85);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* 页面标题，使用主蓝色 */
+        .page-title {
+            text-align: center;
+            color: var(--color-blue);
+            font-size: 40px;
+            margin-bottom: 60px;
+            letter-spacing: 5px;
+            font-weight: 600;
+        }
+
+        /* 播客列表容器 */
+        .podcast-container {
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+        }
+
+        /* 单个播客卡片 */
+        .podcast-card {
+            background-color: rgba(255, 255, 255, 0.75);
+            border-radius: 24px;
+            padding: 25px 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--color-light-blue);
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            transition: all 0.35s ease;
+        }
+
+        .podcast-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(127, 155, 195, 0.25);
+            border-color: var(--color-pink);
+        }
+
+        /* 播客封面（可替换） */
+        .podcast-cover {
+            width: 120px;
+            height: 120px;
+            border-radius: 16px;
+            object-fit: cover;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .podcast-card:hover .podcast-cover {
+            transform: scale(1.05);
+        }
+
+        /* 播客信息区域 */
+        .podcast-info {
+            flex: 1;
+        }
+
+        /* 标题使用主蓝色 */
+        .podcast-title {
+            color: var(--color-blue);
+            font-size: 22px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        /* 描述文字使用淡紫色 */
+        .podcast-desc {
+            color: var(--color-purple);
+            font-size: 15px;
+            margin-bottom: 18px;
+            line-height: 1.6;
+        }
+
+        /* 音频播放器美化 */
+        .audio-player {
+            width: 100%;
+            height: 45px;
+            border-radius: 12px;
+            outline: none;
+        }
+
+        /* 底部提示文字使用淡紫色 */
+        .footer-note {
+            text-align: center;
+            color: var(--color-blue);
+            margin-top: 80px;
+            font-size: 15px;
+            letter-spacing: 1px;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .podcast-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 25px 20px;
+            }
+            .podcast-cover {
+                width: 140px;
+                height: 140px;
+            }
+            .page-title {
+                font-size: 30px;
+                margin-bottom: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景遮罩 -->
+    <div class="bg-overlay"></div>
+
+    <div class="container">
+        <h2 class="page-title">每日播客</h2>
+
+        <!-- 三个播客播放器 -->
+        <div class="podcast-container">
+            <!-- 播客 1 -->
+            <div class="podcast-card">
+                <img src="./photothree.jpg" alt="播客封面" class="podcast-cover">
+                <div class="podcast-info">
+                    <h3 class="podcast-title">深夜电台 · 温柔音乐</h3>
+                    <p class="podcast-desc">在深夜里，听温柔舒缓的音乐，抚平一天的疲惫。</p >
+                    <audio controls class="audio-player" src="light3.mp3">
+                </div>
+            </div>
+
+            <!-- 播客 2 -->
+            <div class="podcast-card">
+                <img src="./photoseven.jpg" alt="播客封面" class="podcast-cover">
+                <div class="podcast-info">
+                    <h3 class="podcast-title">回忆 · 青春岁月</h3>
+                    <p class="podcast-desc">听经典老歌，回首青春岁月</p >
+                    <audio controls class="audio-player" src="music3.mp3">
+                </div>
+            </div>
+
+            <!-- 播客 3 -->
+            <div class="podcast-card">
+                <img src="./photosix.jpg" alt="播客封面" class="podcast-cover">
+                <div class="podcast-info">
+                    <h3 class="podcast-title">夏日 · 微风、骄阳和悠长白昼 </h3>
+                    <p class="podcast-desc">夏日限定：给予一整个夏日好心情</p >
+                    <audio controls class="audio-player" src="light1.mp3">
+                </div>
+            </div>
+        </div>
+
+        <p class="footer-note">© 音乐音频均来源于KuGou音乐</p >
+    </div>
+</body>
+</html>
